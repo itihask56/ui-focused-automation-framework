@@ -1,12 +1,14 @@
 package com.itihas;
+import com.itihas.base.BaseTest;
 import com.itihas.driver.DriverFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.Test;
 
-public class LoginTest {
+public class LoginTest extends BaseTest {
 
-    public static void main(String[] args) {
+    @Test
+    public void loginTest() {
 
          WebDriver driver = DriverFactory.createDriver();
 
