@@ -11,12 +11,12 @@ import java.time.Duration;
 public class BaseTest {
 
     protected WebDriver driver;
-    protected WebDriverWait wait;
 
     @BeforeMethod
     public void setUp() {
 
         driver = DriverFactory.createDriver();
+
 
     }
 

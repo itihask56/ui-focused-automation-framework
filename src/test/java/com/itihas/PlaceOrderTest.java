@@ -1,158 +1,70 @@
 package com.itihas;
 
 import com.itihas.base.BaseTest;
-import com.itihas.driver.DriverFactory;
+import com.itihas.pages.LoginPage;
+import com.itihas.utils.WaitUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
 
 public class PlaceOrderTest extends BaseTest {
 
         @Test
-        public void placeOrder(){
+        public void placeOrder() {
 
+                driver.get("https://www.saucedemo.com/");
 
-        WebDriver driver = DriverFactory.createDriver();
-      // Explicit wait
-        WebDriverWait wait = new WebDriverWait(
-                driver,
-                Duration.ofSeconds(10)
-        );
+                WaitUtils wait = new WaitUtils(driver);
 
-        // -----------------------------
-        // Open application
-        // -----------------------------
+                // Login
+                LoginPage loginPage = new LoginPage(driver);
 
-        driver.get("https://www.saucedemo.com/");
+                loginPage.login(
+                        "standard_user",
+                        "secret_sauce"
+                );
 
-        // -----------------------------
-        // Login
-        // -----------------------------
+                // Add product
+                wait.waitForClickable(By.id("add-to-cart-sauce-labs-backpack")).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.id("user-name")
-        )).sendKeys("standard_user");
+                // Open cart
+                wait.waitForClickable(By.className("shopping_cart_link")).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.id("password")
-        )).sendKeys("secret_sauce");
+                // Verify product
+                String productName = wait.waitForVisibility(By.className("inventory_item_name")).getText();
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.id("login-button")
-        )).click();
+                Assert.assertEquals(productName, "Sauce Labs Backpack");
 
-        // -----------------------------
-        // Add product to cart
-        // -----------------------------
+                // Checkout
+                wait.waitForClickable(By.id("checkout")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.id("add-to-cart-sauce-labs-backpack")
-        )).click();
+                // Customer information
+                wait.waitForVisibility(By.id("first-name")).sendKeys("Itihas");
 
-        // -----------------------------
-        // Open cart
-        // -----------------------------
+                wait.waitForVisibility(By.id("last-name")).sendKeys("Verma");
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.className("shopping_cart_link")
-        )).click();
+                wait.waitForVisibility(By.id("postal-code")).sendKeys("201301");
 
-        // -----------------------------
-        // Verify product
-        // -----------------------------
+                // Continue
+                wait.waitForClickable(By.id("continue")).click();
 
-        String productName = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.className("inventory_item_name")
-                )
-        ).getText();
+                // Verify checkout product
+                String checkoutProduct = wait.waitForVisibility(By.className("inventory_item_name")).getText();
 
-        if (productName.equals("Sauce Labs Backpack")) {
-            System.out.println("Product added successfully");
-        } else {
-            System.out.println("Product was not added");
+                Assert.assertEquals(
+                        checkoutProduct,
+                        "Sauce Labs Backpack"
+                );
+
+                // Finish
+                wait.waitForClickable(By.id("finish")).click();
+
+                // Verify confirmation
+                String confirmationMessage = wait.waitForVisibility(By.className("complete-header")).getText();
+
+                Assert.assertEquals(
+                        confirmationMessage,
+                        "Thank you for your order!"
+                );
         }
-
-        // -----------------------------
-        // Checkout
-        // -----------------------------
-
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.id("checkout")
-        )).click();
-
-        // -----------------------------
-        // Customer information
-        // -----------------------------
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.id("first-name")
-        )).sendKeys("Itihas");
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.id("last-name")
-        )).sendKeys("Verma");
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.id("postal-code")
-        )).sendKeys("201301");
-
-        // -----------------------------
-        // Continue
-        // -----------------------------
-
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.id("continue")
-        )).click();
-
-        // -----------------------------
-        // Verify checkout overview
-        // -----------------------------
-
-        String checkoutProduct = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.className("inventory_item_name")
-                )
-        ).getText();
-
-        if (checkoutProduct.equals("Sauce Labs Backpack")) {
-            System.out.println("Checkout product verified");
-        } else {
-            System.out.println("Checkout product verification failed");
-        }
-
-        // -----------------------------
-        // Finish order
-        // -----------------------------
-
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.id("finish")
-        )).click();
-
-        // -----------------------------
-        // Verify order confirmation
-        // -----------------------------
-
-        String confirmationMessage = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.className("complete-header")
-                )
-        ).getText();
-
-        if (confirmationMessage.equals("Thank you for your order!")) {
-            System.out.println("Order placed successfully");
-        } else {
-            System.out.println("Order placement failed");
-        }
-
-        // -----------------------------
-        // Close browser
-        // -----------------------------
-
-        driver.quit();
-    }
 }
