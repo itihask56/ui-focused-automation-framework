@@ -1,4 +1,5 @@
 package com.itihas;
+import com.itihas.driver.DriverFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -7,11 +8,7 @@ public class LoginTest {
 
     public static void main(String[] args) {
 
-        // 1. Launch browser
-        WebDriver driver = new ChromeDriver();
-
-        // 2. Maximize browser
-        driver.manage().window().maximize();
+         WebDriver driver = DriverFactory.createDriver();
 
         // 3. Open application
         driver.get("https://www.saucedemo.com/");
