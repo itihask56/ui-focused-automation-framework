@@ -1,44 +1,23 @@
 package com.itihas;
 
+import com.itihas.base.BaseTest;
+import com.itihas.driver.DriverFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.Test;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 
-public class PlaceOrderTest {
+public class PlaceOrderTest extends BaseTest {
 
-    public static void main(String[] args) {
+        @Test
+        public void placeOrder(){
 
-        // -----------------------------
-        // Browser configuration
-        // -----------------------------
 
-        ChromeOptions options = new ChromeOptions();
-
-        Map<String, Object> prefs = new HashMap<>();
-
-        // Disable password manager
-        prefs.put("credentials_enable_service", false);
-        prefs.put("profile.password_manager_enabled", false);
-        prefs.put("profile.password_manager_leak_detection", false);
-
-        // Disable autofill
-        prefs.put("autofill.profile_enabled", false);
-        prefs.put("autofill.credit_card_enabled", false);
-
-        options.setExperimentalOption("prefs", prefs);
-
-        WebDriver driver = new ChromeDriver(options);
-
-        driver.manage().window().maximize();
-
-        // Explicit wait
+        WebDriver driver = DriverFactory.createDriver();
+      // Explicit wait
         WebDriverWait wait = new WebDriverWait(
                 driver,
                 Duration.ofSeconds(10)
